@@ -1,0 +1,22 @@
+version: '3'
+
+volumes:
+  data: 
+
+services:
+  database: 
+    image: postgres:13-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=123456
+    volumes:
+      - data:/var/lib/postgresql/data
+  api:
+    build: ./api
+    container_name: api_container
+    command: npm start
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./api:/app
