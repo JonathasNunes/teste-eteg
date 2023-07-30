@@ -10,46 +10,45 @@ export class ClientBO {
     clientService = new ClientService();
 
     async save(req) {
-
-        //convert req.body plain object to Structure Class and validate
-        let clientStructureClass = plainToClass(ClientValidation , req.body); 
-        let errors = await validate(clientStructureClass);
-        if(errors.length > 0) {
-            let erVet = [];
-            for (let i in errors) {
-                erVet.push(errors[i].constraints);
-            }
-            let error = {
-                error: erVet
-            }
-            return error;
-        } 
-
+        // Convert req.body plain object to Structure Class and validate
+        const clientStructureClass = plainToClass(ClientValidation, req.body);
+        const errors = await validate(clientStructureClass);
+        
+        if (errors.length > 0) {
+          const errorMessages = errors.map(error => error.constraints);
+          return { error: errorMessages };
+        }
+      
         const { name, cpf, email, favorite_color, obs, id } = req.body;
         const client = new Client(name, cpf, email, favorite_color, obs);
-
-        //Validate cpf
+      
+        // Validate cpf
         if (!cpfValidator.isValid(cpf)) {
-            throw Error('Cpf not valid!');
+          throw new Error('Cpf not valid!');
         }
-
-        //Check if cpf and email already exists in Db
-        if (typeof id !== "undefined") {
+      
+        try {
+          // Check if cpf and email already exist in Db
+          if (typeof id !== 'undefined') {
             client.id = parseInt(id);
-        }else {
+          } else {
             const cpfExists = await this.isCpfInUse(cpf);
             if (cpfExists) {
-                throw Error('Cpf already exists!');
+              throw new Error('Cpf already exists!');
             }
-
+      
             const emailExists = await this.isEmailInUse(email);
             if (emailExists) {
-                throw Error('Email already exists!');
+              throw new Error('Email already exists!');
             }
+          }
+      
+          return await this.clientService.save(client);
+        } catch (error) {
+          // Handle specific errors if needed, or rethrow the error for the calling code to handle.
+          throw error;
         }
-
-        return await this.clientService.save(client);
-    }
+      }
 
     async getAll() {
         return await this.clientService.getAll();

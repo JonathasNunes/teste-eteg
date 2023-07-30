@@ -1,4 +1,3 @@
-import { Client } from "../entity/Client";
 import { ClientBO } from "../bo/ClientBO";
 
 export class ClientController {

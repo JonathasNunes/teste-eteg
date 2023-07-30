@@ -1,8 +1,5 @@
 version: '3'
 
-# volumes:
-#   data: 
-
 services:
   database: 
     image: postgres:13-alpine
@@ -14,11 +11,12 @@ services:
       - POSTGRES_DB=apiTesteEteg
     volumes:
       - ./pgdata:/var/lib/postgresql/data
-  # api:
-  #   build: ./api
-  #   container_name: api_container
-  #   command: npm start
-  #   ports:
-  #     - "4000:4000"
-  #   volumes:
-  #     - ./api:/app
+  api:
+    build: ./api
+    container_name: api_container
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./api:/app
+    depends_on:
+      - database
