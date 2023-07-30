@@ -1,4 +1,5 @@
 import { IsString, IsNotEmpty, IsEmail, Length } from 'class-validator';
+import { IsNull } from 'typeorm';
 
 export class ClientValidation{ 
 

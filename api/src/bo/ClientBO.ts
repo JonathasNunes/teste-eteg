@@ -25,8 +25,8 @@ export class ClientBO {
             return error;
         } 
 
-        const { name, cpf, email, favorite_color, id } = req.body;
-        const client = new Client(name, cpf, email, favorite_color);
+        const { name, cpf, email, favorite_color, obs, id } = req.body;
+        const client = new Client(name, cpf, email, favorite_color, obs);
 
         //Validate cpf
         if (!cpfValidator.isValid(cpf)) {
