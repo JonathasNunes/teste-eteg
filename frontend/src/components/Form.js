@@ -65,7 +65,7 @@ const Form = ({ getClients, onEdit, setOnEdit }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+        let clean = true;
         const client = ref.current;
     
         if (
@@ -77,38 +77,47 @@ const Form = ({ getClients, onEdit, setOnEdit }) => {
         }
     
         if (onEdit) {
-          await axios
-            .put("http://localhost:4000/api/client/edit" + onEdit.id, {
+          try {
+            const { data } = await axios.put('http://localhost:4000/api/client/edit', {
+              id: onEdit.id,
               name: client.name.value,
               email: client.email.value,
               cpf: client.cpf.value,
               favorite_color: client.favorite_color.value,
-              obs: client.obs.value
-            })
-            .then(({ data }) => toast.success(data))
-            .catch(({ data }) => toast.error(data));
+              obs: client.obs.value,
+            });
+            toast.success(data.message);
+          } catch (error) {
+            clean = false;
+            toast.error(error.response.data.error);
+          }
         } else {
-          await axios
-            .post("http://localhost:4000/api/client", {
+          try {
+            const { data } = await axios.post('http://localhost:4000/api/client', {
               name: client.name.value,
               email: client.email.value,
               cpf: client.cpf.value,
               favorite_color: client.favorite_color.value,
-              obs: client.obs.value
-            })
-            .then(({ data }) => toast.success(data))
-            .catch(({ data }) => toast.error(data));
+              obs: client.obs.value,
+            });
+            toast.success(data.message);
+          } catch (error) {
+            clean = false;
+            toast.error(error.response.data.error);
+          }
         }
     
-        client.name.value = "";
-        client.email.value = "";
-        client.cpf.value = "";
-        client.obs.value = "";
-        client.favorite_color.value = "#ffffff";
-        setInitialColor("#ffffff");
-    
-        setOnEdit(null);
-        getClients();
+        if (clean) {
+          client.name.value = "";
+          client.email.value = "";
+          client.cpf.value = "";
+          client.obs.value = "";
+          client.favorite_color.value = "#ffffff";
+          setInitialColor(client.favorite_color.value);
+      
+          setOnEdit(null);
+          getClients();
+        }
       };
 
     return (
