@@ -4,8 +4,8 @@ export class ClientController {
 
     clientBO = new ClientBO();
 
-    async save(req) {
-        return await this.clientBO.save(req);
+    async save(req, res) {
+        return await this.clientBO.save(req, res);
     }
 
     async getAll() {

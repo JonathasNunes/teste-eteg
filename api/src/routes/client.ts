@@ -8,7 +8,7 @@ const clientCtrl = new ClientController();
  * Save new client
  */
 routerClient.post('/', async (req, res) => {
-    const savedClient = await clientCtrl.save(req);
+    const savedClient = await clientCtrl.save(req, res);
     res.json(savedClient);
 });
 
@@ -16,7 +16,7 @@ routerClient.post('/', async (req, res) => {
  * Edit client data
  */
 routerClient.put('/edit', async (req, res) => {
-    const savedClient = await clientCtrl.save(req);
+    const savedClient = await clientCtrl.save(req, res);
     res.json(savedClient);
 });
 

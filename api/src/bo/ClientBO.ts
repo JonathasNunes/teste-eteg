@@ -9,7 +9,7 @@ export class ClientBO {
 
     clientService = new ClientService();
 
-    async save(req) {
+    async save(req, res) {
         // Convert req.body plain object to Structure Class and validate
         const clientStructureClass = plainToClass(ClientValidation, req.body);
         const errors = await validate(clientStructureClass);
@@ -24,29 +24,31 @@ export class ClientBO {
       
         // Validate cpf
         if (!cpfValidator.isValid(cpf)) {
-          throw new Error('Cpf not valid!');
+          return res.status(400).json({ error: 'CPF inválido ' });
         }
       
+        let msg = 'Cliente cadastrado com sucesso!';
         try {
           // Check if cpf and email already exist in Db
           if (typeof id !== 'undefined') {
             client.id = parseInt(id);
+            msg = 'Cliente editado com sucesso!';
           } else {
             const cpfExists = await this.isCpfInUse(cpf);
             if (cpfExists) {
-              throw new Error('Cpf already exists!');
+              return res.status(400).json({ error: 'Cliente já existe. CPF já cadastrado ' });
             }
       
             const emailExists = await this.isEmailInUse(email);
             if (emailExists) {
-              throw new Error('Email already exists!');
+              return res.status(400).json({ error: 'Cliente já existe. Email já cadastrado ' });
             }
           }
-      
-          return await this.clientService.save(client);
+          await this.clientService.save(client);
+          return res.status(201).json({ message: msg, client });
         } catch (error) {
           // Handle specific errors if needed, or rethrow the error for the calling code to handle.
-          throw error;
+          return res.status(400).json({ error: 'Erro ao cadastrar cliente: ' + error.message });
         }
       }
 
