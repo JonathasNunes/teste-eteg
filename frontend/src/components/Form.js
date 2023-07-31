@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ColorPicker from "./ColorPicker";
 import styled from 'styled-components';
 
@@ -45,10 +45,21 @@ const Button = styled.button`
   height: 42px;
 `;
 
-const Form = ({ getUsers, onEdit, setOnEdit }) => {
+const Form = ({ getClients, onEdit, setOnEdit }) => {
     const ref = useRef();
+    const [initialColor, setInitialColor] = useState("#ffffff"); // Initial Color
 
-    const initialColor = '#ffffff'; // Inicial Color
+    useEffect(() => {
+        if (onEdit) {
+          const client = ref.current;
+    
+          client.name.value = onEdit.name;
+          client.email.value = onEdit.email;
+          client.cpf.value = onEdit.cpf;
+          client.obs.value = onEdit.obs;
+          setInitialColor(onEdit.favorite_color); 
+        }
+    }, [onEdit]);
 
     return (
         <FormContainer ref={ref}>

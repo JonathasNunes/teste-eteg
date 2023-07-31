@@ -1,10 +1,14 @@
 import { createConnection, ConnectionOptions } from 'typeorm';
 import { Client } from '../entity/Client';
+import * as dotenv from 'dotenv';
 
 export const connectServerDB = async () => {
+
+    dotenv.config();
+
     const dbOptions: ConnectionOptions = {
         type: 'postgres',
-        host: process.env.DB_HOST,
+        host: process.env.DB_DOCKER_VOLUME,
         port: parseInt(process.env.DB_PORT),
         username: process.env.DB_USER,
         password: process.env.DB_PASS,
