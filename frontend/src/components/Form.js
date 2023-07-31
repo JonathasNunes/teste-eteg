@@ -1,6 +1,8 @@
+import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import ColorPicker from "./ColorPicker";
 import styled from 'styled-components';
+import { toast } from "react-toastify";
 
 const FormContainer = styled.form`
   display: flex;
@@ -61,8 +63,56 @@ const Form = ({ getClients, onEdit, setOnEdit }) => {
         }
     }, [onEdit]);
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        const client = ref.current;
+    
+        if (
+          !client.name.value ||
+          !client.email.value ||
+          !client.cpf.value 
+        ) {
+          return toast.warn("Preencha todos os campos!");
+        }
+    
+        if (onEdit) {
+          await axios
+            .put("http://localhost:4000/api/client/edit" + onEdit.id, {
+              name: client.name.value,
+              email: client.email.value,
+              cpf: client.cpf.value,
+              favorite_color: client.favorite_color.value,
+              obs: client.obs.value
+            })
+            .then(({ data }) => toast.success(data))
+            .catch(({ data }) => toast.error(data));
+        } else {
+          await axios
+            .post("http://localhost:4000/api/client", {
+              name: client.name.value,
+              email: client.email.value,
+              cpf: client.cpf.value,
+              favorite_color: client.favorite_color.value,
+              obs: client.obs.value
+            })
+            .then(({ data }) => toast.success(data))
+            .catch(({ data }) => toast.error(data));
+        }
+    
+        client.name.value = "";
+        client.email.value = "";
+        client.cpf.value = "";
+        client.obs.value = "";
+        client.favorite_color.value = "#ffffff";
+        setInitialColor("#ffffff");
+    
+        setOnEdit(null);
+        getClients();
+      };
+
     return (
-        <FormContainer ref={ref}>
+        <FormContainer ref={ref} onSubmit={handleSubmit}>
             <InputArea>
                 <Label>Nome</Label>
                 <Input name="name" />
