@@ -52,7 +52,6 @@ const Grid = ({ }) => {
           <Th >Cor Favorita</Th>
           <Th onlyWeb>Observações</Th>
           <Th></Th>
-          <Th></Th>
         </Tr>
       </Thead>
       <Tbody>

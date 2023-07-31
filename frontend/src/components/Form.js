@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import ColorPicker from "./ColorPicker";
 import styled from 'styled-components';
 
 const FormContainer = styled.form`
@@ -16,6 +17,12 @@ const InputArea = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+`;
+
+const InputAreaColor = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 40%;
 `;
 
 const Input = styled.input`
@@ -41,6 +48,8 @@ const Button = styled.button`
 const Form = ({ getUsers, onEdit, setOnEdit }) => {
     const ref = useRef();
 
+    const initialColor = '#ffffff'; // Inicial Color
+
     return (
         <FormContainer ref={ref}>
             <InputArea>
@@ -56,13 +65,13 @@ const Form = ({ getUsers, onEdit, setOnEdit }) => {
                 <Input name="cpf" />
             </InputArea>
             <InputArea>
-                <Label>Cor Favorita</Label>
-                <Input name="favorite_color" type="text" />
-            </InputArea>
-            <InputArea>
                 <Label>Observações</Label>
                 <Input name="obs" type="text" />
             </InputArea>
+            <InputAreaColor>
+                <Label>Cor Favorita</Label>
+                <ColorPicker initialColor={initialColor} />
+            </InputAreaColor>
 
             <Button type="submit">SALVAR</Button>
         </FormContainer>
