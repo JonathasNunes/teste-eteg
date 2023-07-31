@@ -18,6 +18,7 @@
       "morgan": "^1.10.0",
       "pg": "^8.4.0",
       "reflect-metadata": "^0.1.10",
+      "styled-components": "^6.0.5",
       "ts-node": "^10.9.1",
       "typeorm": "0.2.31"
    },
