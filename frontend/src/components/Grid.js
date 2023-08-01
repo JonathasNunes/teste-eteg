@@ -1,8 +1,6 @@
 import React from "react";
-//import axios from "axios";
 import styled from "styled-components";
 import { FaEdit } from "react-icons/fa";
-//import { toast } from "react-toastify";
 
 const Table = styled.table`
   width: 100%;
@@ -51,7 +49,6 @@ const Grid = ({ clients, setClients, setOnEdit }) => {
           const [_, r, g, b] = color;
           color = "#" + r + r + g + g + b + b;
         }
-
         // Se a cor tiver 6 dígitos (ou seja, estiver no formato #RRGGBB), use-a diretamente
         // Caso contrário, retorne null para não definir o background-color
         return /^#([A-Fa-f0-9]{6})$/.test(color) ? color : null;

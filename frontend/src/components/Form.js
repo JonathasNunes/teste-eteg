@@ -81,7 +81,7 @@ const Form = ({ getClients, onEdit, setOnEdit }) => {
           id: onEdit.id,
           name: client.name.value,
           email: client.email.value,
-          cpf: client.cpf.value.replace(/\D/g, ""), // Remove a máscara do CPF antes de enviar
+          cpf: client.cpf.value.replace(/\D/g, ""),
           favorite_color: client.favorite_color.value,
           obs: client.obs.value,
         });
@@ -95,7 +95,7 @@ const Form = ({ getClients, onEdit, setOnEdit }) => {
         const { data } = await axios.post("http://localhost:4000/api/client", {
           name: client.name.value,
           email: client.email.value,
-          cpf: client.cpf.value.replace(/\D/g, ""), // Remove a máscara do CPF antes de enviar
+          cpf: client.cpf.value.replace(/\D/g, ""),
           favorite_color: client.favorite_color.value,
           obs: client.obs.value,
         });
@@ -134,8 +134,8 @@ const Form = ({ getClients, onEdit, setOnEdit }) => {
                 <InputMask
                   mask="999.999.999-99"
                   name="cpf"
-                  value={cpfValue} // Use cpfValue aqui
-                  onChange={(e) => setCpfValue(e.target.value)} // Atualiza o estado cpfValue quando o campo for alterado
+                  value={cpfValue}
+                  onChange={(e) => setCpfValue(e.target.value)}
                   style={{
                     width: "95%",
                     padding: "0 10px",
