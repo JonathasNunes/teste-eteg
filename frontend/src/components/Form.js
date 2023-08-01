@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+import InputMask from "react-input-mask";
 import ColorPicker from "./ColorPicker";
 import styled from 'styled-components';
 import { toast } from "react-toastify";
@@ -48,79 +49,77 @@ const Button = styled.button`
 `;
 
 const Form = ({ getClients, onEdit, setOnEdit }) => {
-    const ref = useRef();
-    const [initialColor, setInitialColor] = useState("#ffffff"); // Initial Color
+  const ref = useRef();
+  const [initialColor, setInitialColor] = useState("#ffffff"); // Initial Color
+  const [cpfValue, setCpfValue] = useState("");
 
-    useEffect(() => {
-        if (onEdit) {
-          const client = ref.current;
-    
-          client.name.value = onEdit.name;
-          client.email.value = onEdit.email;
-          client.cpf.value = onEdit.cpf;
-          client.obs.value = onEdit.obs;
-          setInitialColor(onEdit.favorite_color); 
-        }
-    }, [onEdit]);
+  useEffect(() => {
+    if (onEdit) {
+      const client = ref.current;
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        let clean = true;
-        const client = ref.current;
-    
-        if (
-          !client.name.value ||
-          !client.email.value ||
-          !client.cpf.value 
-        ) {
-          return toast.warn("Preencha todos os campos!");
-        }
-    
-        if (onEdit) {
-          try {
-            const { data } = await axios.put('http://localhost:4000/api/client/edit', {
-              id: onEdit.id,
-              name: client.name.value,
-              email: client.email.value,
-              cpf: client.cpf.value,
-              favorite_color: client.favorite_color.value,
-              obs: client.obs.value,
-            });
-            toast.success(data.message);
-          } catch (error) {
-            clean = false;
-            toast.error(error.response.data.error);
-          }
-        } else {
-          try {
-            const { data } = await axios.post('http://localhost:4000/api/client', {
-              name: client.name.value,
-              email: client.email.value,
-              cpf: client.cpf.value,
-              favorite_color: client.favorite_color.value,
-              obs: client.obs.value,
-            });
-            toast.success(data.message);
-          } catch (error) {
-            clean = false;
-            toast.error(error.response.data.error);
-          }
-        }
-    
-        if (clean) {
-          client.name.value = "";
-          client.email.value = "";
-          client.cpf.value = "";
-          client.obs.value = "";
-          client.favorite_color.value = "#ffffff";
-          setInitialColor(client.favorite_color.value);
-      
-          setOnEdit(null);
-          getClients();
-        }
-      };
+      client.name.value = onEdit.name;
+      client.email.value = onEdit.email;
+      client.cpf.value = onEdit.cpf;
+      client.obs.value = onEdit.obs;
+      setInitialColor(onEdit.favorite_color);
+      setCpfValue(onEdit.cpf);
+    }
+  }, [onEdit]);
 
-    return (
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let clean = true;
+    const client = ref.current;
+
+    if (!client.name.value || !client.email.value || !client.cpf.value) {
+      return toast.warn("Preencha todos os campos!");
+    }
+
+    if (onEdit) {
+      try {
+        const { data } = await axios.put("http://localhost:4000/api/client/edit", {
+          id: onEdit.id,
+          name: client.name.value,
+          email: client.email.value,
+          cpf: client.cpf.value.replace(/\D/g, ""), // Remove a máscara do CPF antes de enviar
+          favorite_color: client.favorite_color.value,
+          obs: client.obs.value,
+        });
+        toast.success(data.message);
+      } catch (error) {
+        clean = false;
+        toast.error(error.response.data.error);
+      }
+    } else {
+      try {
+        const { data } = await axios.post("http://localhost:4000/api/client", {
+          name: client.name.value,
+          email: client.email.value,
+          cpf: client.cpf.value.replace(/\D/g, ""), // Remove a máscara do CPF antes de enviar
+          favorite_color: client.favorite_color.value,
+          obs: client.obs.value,
+        });
+        toast.success(data.message);
+      } catch (error) {
+        clean = false;
+        toast.error(error.response.data.error);
+      }
+    }
+
+    if (clean) {
+      setCpfValue("");
+      client.name.value = "";
+      client.email.value = "";
+      client.obs.value = "";
+      client.favorite_color.value = "#ffffff";
+      setInitialColor("#ffffff");
+
+      setOnEdit(null);
+      getClients();
+    }
+  };
+
+  return (
         <FormContainer ref={ref} onSubmit={handleSubmit}>
             <InputArea>
                 <Label>Nome</Label>
@@ -132,7 +131,19 @@ const Form = ({ getClients, onEdit, setOnEdit }) => {
             </InputArea>
             <InputArea>
                 <Label>CPF</Label>
-                <Input name="cpf" />
+                <InputMask
+                  mask="999.999.999-99"
+                  name="cpf"
+                  value={cpfValue} // Use cpfValue aqui
+                  onChange={(e) => setCpfValue(e.target.value)} // Atualiza o estado cpfValue quando o campo for alterado
+                  style={{
+                    width: "95%",
+                    padding: "0 10px",
+                    border: "1px solid #bbb",
+                    borderRadius: "5px",
+                    height: "40px",
+                  }}
+                />
             </InputArea>
             <InputArea>
                 <Label>Observações</Label>
@@ -145,7 +156,7 @@ const Form = ({ getClients, onEdit, setOnEdit }) => {
 
             <Button type="submit">SALVAR</Button>
         </FormContainer>
-    );
+  );
 };
 
 export default Form;
