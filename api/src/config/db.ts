@@ -6,8 +6,6 @@ export const connectServerDB = async () => {
 
     dotenv.config();
 
-    console.log("process.env.DB_DOCKER_VOLUME: " + process.env.DB_DOCKER_VOLUME)
-
     const dbOptions: ConnectionOptions = {
         type: 'postgres',
         host: process.env.DB_DOCKER_VOLUME,
@@ -16,7 +14,7 @@ export const connectServerDB = async () => {
         password: process.env.DB_PASS,
         database: process.env.DB_NAME,
         synchronize: true, // Warning: the synchronize:true is not recomended to PRD env
-        logging: true, // Opcional: show query logs
+        logging: false, // Opcional: show query logs
         entities: [Client], // Add all class entitys
     };
 
