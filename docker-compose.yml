@@ -20,3 +20,10 @@ services:
       - ./api:/app
     depends_on:
       - database
+  app:
+    build: ./frontend
+    container_name: app_container
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    tty: true
